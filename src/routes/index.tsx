@@ -797,6 +797,7 @@ function Index() {
                 if (hasPrompt(slot)) {
                   const prompt = (slot as string).trim();
                   record(s.index, { prompt, status: "waiting", error: undefined });
+                  enqueue(s, prompt);
                   return;
                 }
                 record(s.index, { prompt: undefined, status: "error", error: "prompt missing" });
