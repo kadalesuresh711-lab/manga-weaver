@@ -893,33 +893,23 @@ export function chainContinuity(
   let active: string | null = null;
   return prompts.map((prompt, i) => {
     if (!prompt.trim()) return prompt;
-    const line = all[(wanted[i] as number) - 1]?.text ?? "";
     const here = detectSetting(prompt);
-    const declaresPlace = PLACE_CUES.test(line);
-    if (!active) {
+    if (here) {
+      // The writer named a place for THIS timestamp. That place is the script's
+      // own, so it is never overwritten with an earlier panel's location — the
+      // old rewrite silently moved whole stretches of the story into the first
+      // panel's room whenever the Hindi line's place word was not in the cue
+      // list, which made prompts read as a different scene than the script.
       active = here;
       return prompt;
     }
-    if (declaresPlace) {
-      // The line itself moves the story; trust the written setting.
-      if (here) active = here;
-      return prompt;
-    }
-    if (here && here === active) return prompt;
-    // \b matters: without it the place word "bus" rewrote "business suit" into
-    // "roominess suit", and that corrupted wording went straight to the renderer.
-    const fixed = here
-      ? prompt.replace(
-          new RegExp(`\\b${here.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i"),
-          active,
-        )
-      : prompt;
-    // Described as scenery, not as an instruction: "do not move the story to a
-    // different place" is not something a renderer can draw, and it displaced
-    // real scene detail out of the prompt window.
-    return `${fixed}. The same ${active} as the previous panel, with the same walls, furniture, props and time of day`;
+    if (!active) return prompt;
+    // Only a prompt with NO place of its own inherits the running location, and
+    // it is described as scenery, never as an instruction.
+    return `${prompt}. The same ${active} as the previous panel, with the same walls, furniture, props and time of day`;
   });
 }
+
 
 
 /** True when a string is mostly Latin-script text the image engine can read. */
