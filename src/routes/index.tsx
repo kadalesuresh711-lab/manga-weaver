@@ -1010,40 +1010,28 @@ function Index() {
         if (fatal) throw fatal.reason;
       };
 
-      // Stage 1 must finish completely: every timestamp gets its prompt before
-      // anything is checked or drawn.
+      // Writing and drawing run TOGETHER: each timestamp's prompt is written on
+      // its own and its picture starts rendering the moment that prompt lands.
+      // The lanes idle (they never exit) until the writer is finished, so no
+      // panel is ever drawn before its own prompt exists.
+      const lanes = runLanes();
       await promptStage;
       promptingDone = true;
       tick(true);
-
-      // Prompt verification removed: prompts are drawn exactly as written, so a
-      // run goes straight from writing to rendering with no extra text calls.
-      for (const s of list) {
-        if (hasPrompt(s.prompt) && !s.url) record(s.index, { status: "waiting", error: undefined });
-      }
-      tick(true);
-
-
-
-      // Stage 3: images — only now, with every prompt written and verified.
-      queue.length = 0;
-      for (const s of list) {
-        if (hasPrompt(s.prompt) && !s.url) {
-          queue.push({ seg: s, prompt: (s.prompt as string).trim(), attempts: 0 });
-        }
-      }
-      if (queue.length > 0 && !cancelRef.current) await runLanes();
+      await lanes;
 
       // Safety net: anything that gained a prompt but never got drawn (for
       // example a lane that exited just as a repair prompt landed) is drawn now.
       if (!cancelRef.current) {
-        queue.length = 0;
+        let pendingDraw = 0;
         for (const s of list) {
           if (hasPrompt(s.prompt) && !s.url) {
-            queue.push({ seg: s, prompt: (s.prompt as string).trim(), attempts: 0 });
+            queued.delete(s.index);
+            enqueue(s, s.prompt as string);
+            pendingDraw++;
           }
         }
-        if (queue.length > 0) await runLanes();
+        if (pendingDraw > 0) await runLanes();
       }
 
 
