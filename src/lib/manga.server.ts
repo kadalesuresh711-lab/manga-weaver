@@ -16,10 +16,11 @@ const IMAGE_REQUEST_TIMEOUT_MS = 1_800_000;
  * unwanted media such as photography or pencil sketches can make Flux draw them.
  */
 export const STYLE =
-  "FIXED VISUAL STYLE: dynamic shonen action manga artwork of a magical fantasy world, bold crisp ink linework, " +
-  "dramatic screentone-style shading, explosive energy and aura effects, motion speed lines on attacks, " +
-  "expressive manga facial design, consistent character proportions, richly detailed magical world backgrounds, " +
-  "vivid saturated colours with glowing magical light, sharp finished action-manga artwork";
+  "FIXED VISUAL STYLE: vivid full-colour shonen fighting manga artwork of a magical fantasy world, heavy bold black ink linework " +
+  "with dramatic hatching, screentone and halftone comic shading, deep cross-hatched shadows, explosive glowing energy and aura effects, " +
+  "motion speed lines on attacks, expressive manga facial design, consistent character proportions, " +
+  "intensely saturated jewel-tone colours with glowing magical light, dramatic comic-panel composition, " +
+  "richly detailed fantastical backgrounds, sharp finished colour-manga illustration";
 
 /**
  * The single authoritative light statement for every panel: natural, faithful
@@ -330,6 +331,15 @@ const PROMPT_SYSTEM =
   "the earlier script lines so the same ability always looks the same; never give a character a power the script did " +
   "not give them. Also describe the battlefield itself in full — terrain, weather, sky, surrounding structures, " +
   "onlookers if the line has them — so the fight reads as happening in a real place at that exact timestamp.\n" +
+  "- MAGICAL WORLD SETTINGS (critical): this story takes place in a magical fantasy world, so EVERY environment — a " +
+  "classroom, school, training ground, forest, field, road, village, town, city, house, temple, market or arena — " +
+  "must be described as a place inside that magical world, never as a plain modern everyday location. Give each " +
+  "setting 2-3 concrete magical-world features the script does not forbid: floating lanterns or drifting arcane " +
+  "sigils, glowing runes and enchanted objects, crystalline or otherworldly plants, fantasy architecture such as " +
+  "arched stonework, towering spires or carved totems, light motes in the air, an unusual sky (twin moons, " +
+  "aurora-tinted clouds, distant floating islands). Keep the script's location type and era recognisable — a " +
+  "classroom stays a classroom, a village stays a village — but they are the classroom and village of a magical " +
+  "world, with those fantasy features drawn in foreground, midground and background.\n" +
   "- Exactly one scene, one moment, one instance of each character. Never ask for multiple panels, insets or collages.\n" +
   "- NO-CHARACTER LINES (critical): if the line describes only a place, an object, the sky, weather or a phenomenon and " +
   "involves no person, the prompt MUST be a pure environment shot with NOBODY in it. Start it with 'Empty environment " +
@@ -1577,11 +1587,13 @@ function clip(s: string, max: number): string {
  * without spending CLIP's short window on style nouns — and, critically,
  * without ever naming faces or eyes as things to draw.
  */
-const STYLE_LEAD = "dynamic shonen action manga illustration, magical fantasy world, of";
+const STYLE_LEAD = "vivid colour shonen action manga panel in a magical fantasy world, of";
 
 const STYLE_TAIL =
-  "bold shonen fighting manga artwork, crisp ink outlines, dramatic shading, glowing magical energy effects, " +
-  "motion lines on action, full colour, richly detailed fantasy background, finished artwork drawn edge to edge";
+  "bold shonen fighting manga artwork, heavy black ink outlines with dramatic hatching, halftone screentone shading, " +
+  "deeply saturated vivid colours, glowing magical energy effects, motion lines on action, " +
+  "high-contrast dramatic lighting, richly detailed fantastical background full of magical-world detail, " +
+  "finished colour manga illustration drawn edge to edge";
 
 /**
  * ONE short identity line per character in frame.
