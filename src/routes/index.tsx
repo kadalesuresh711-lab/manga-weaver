@@ -625,9 +625,18 @@ function Index() {
       let keyTick = 0;
       type Job = { seg: Shot; prompt: string; attempts: number };
       // Only lines that actually HAVE a prompt may enter the render queue.
-      const queue: Job[] = pending
-        .filter((s) => hasPrompt(s.prompt) && !s.url)
-        .map((s) => ({ seg: s, prompt: (s.prompt as string).trim(), attempts: 0 }));
+      const queue: Job[] = [];
+      /** Timestamps already handed to the renderer, so nothing is drawn twice. */
+      const queued = new Set<number>();
+      /** Queue one timestamp for drawing the instant its own prompt exists. */
+      const enqueue = (seg: Shot, prompt: string) => {
+        if (queued.has(seg.index)) return;
+        queued.add(seg.index);
+        queue.push({ seg, prompt: prompt.trim(), attempts: 0 });
+      };
+      for (const s of pending) {
+        if (hasPrompt(s.prompt) && !s.url) enqueue(s, s.prompt as string);
+      }
 
       /**
        * One timestamp = one image, in any condition: a failed panel is pushed
