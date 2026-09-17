@@ -18,3 +18,14 @@
       needs an image model with reference/character conditioning
 - [ ] Run the complete 00:00–05:05 script and verify every image against its
       exact timestamped line and final renderer prompt; rerun every mismatch
+
+## Rebuild in this project (Sep 2026)
+- [x] Project code brought in and dependencies installed
+- [x] All 10 Pixazo keys + Z.ai key stored as encrypted secrets (server-only)
+- [x] Prompt batching removed: one writing request per timestamp, whole script
+      as context, larger detail budget per prompt
+- [x] Each image starts rendering the instant its own prompt lands (writing and
+      drawing run together, no waiting for the full prompt list)
+- [x] Explicit fighting / magic / ability / battlefield detail rule in the writer
+- [x] Lanes tuned (6 per user, 2 per key over 10 keys) so 2-3 people can run
+      the service at the same time
