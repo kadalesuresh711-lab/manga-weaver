@@ -100,28 +100,26 @@ const SAMPLE = `(0:00)Henan की कहानी असुरा का उद
 /* ------------------------------------------------------------------ */
 
 /**
- * TIMESTAMPS per prompt batch — the batch unit is the timestamp, not the raw
- * line count: 20 consecutive timestamps of the script go out as one pass.
+ * NO PROMPT BATCHES. One timestamp = one writing request = one image.
  *
- * The model receives broad surrounding context but writes only this group at a
- * time. Twenty neighbouring timestamps stay inside one continuous scene, while
- * keeping each upstream request smaller so the provider's burst limit is far
- * less likely to trip.
+ * The writer still receives the whole script (so continuity holds), but it is
+ * asked for a single timestamp at a time, which lets each prompt carry maximum
+ * detail. The moment a prompt lands it is queued for drawing — the run never
+ * waits for all prompts to be written first.
  */
-const PROMPT_RANGE = 20;
+const PROMPT_RANGE = 1;
 
 
 
 
 /**
- * Image pipeline shape: TEN Pixazo keys, THREE images per key at a time.
- *
- * Each lane sends IMAGE_BATCH prompts in one round trip and the server renders
- * them concurrently, spreading them across the key pool. With 24 lanes of four
- * prompts, up to 96 pictures are drawn in parallel.
+ * Image pipeline shape: TEN Pixazo keys, two images per key at a time (20 slots
+ * server-side). Each lane draws ONE prompt with its exact text, so lanes are
+ * kept modest and 2-3 people can run the service simultaneously without
+ * starving each other's keys.
  */
-const IMAGE_CONCURRENCY = 8;
-const IMAGE_BATCH = 4;
+const IMAGE_CONCURRENCY = 6;
+const IMAGE_BATCH = 1;
 /**
  * The server already downloads and validates every finished image (complete
  * file + entropy) before returning its URL, so re-downloading and decoding it
