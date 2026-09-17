@@ -262,7 +262,15 @@ const PROMPT_SYSTEM =
   "depict him as a boy, teenager, schoolboy, child, or 14–16 years old.\n" +
   "- ONE LINE = ONE IMAGE (absolute): exactly one prompt per requested number, in the same order, never merged, never " +
   "split, never skipped, never a placeholder. Each prompt must be visibly DIFFERENT from its neighbours.\n" +
+  "- NOTHING INVENTED (absolute): every person, place, object, prop and event in the prompt must come from the script — " +
+  "from the requested line itself, from its neighbouring lines, or from the character bible. Never invent a room type, " +
+  "building, institution, machine, vehicle, furniture, clock time, weather or event the script never mentions (no " +
+  "'investigation room', 'office', 'laboratory' or similar unless the script says so). If the line does not state a " +
+  "place, reuse the last place the SCRIPT itself stated — never a new one you made up. Before writing, translate the " +
+  "Hindi/Hinglish line to yourself and make sure every noun and verb of that translation is visible in your prompt; if " +
+  "your prompt could not be recognised as a drawing of that exact line, rewrite it.\n" +
   "- LITERAL SUBJECT (the most important rule): draw the visible event happening at THAT timestamp and nothing else. " +
+
   "First classify the line. If a named person says, tells, explains, warns, asks, answers, thinks, remembers or learns " +
   "information, show that present speaker/listener interaction and its emotion — DO NOT illustrate nouns inside their " +
   "speech or thought as if those events are happening now. For example, a woman warning someone about an army shows " +
@@ -893,33 +901,23 @@ export function chainContinuity(
   let active: string | null = null;
   return prompts.map((prompt, i) => {
     if (!prompt.trim()) return prompt;
-    const line = all[(wanted[i] as number) - 1]?.text ?? "";
     const here = detectSetting(prompt);
-    const declaresPlace = PLACE_CUES.test(line);
-    if (!active) {
+    if (here) {
+      // The writer named a place for THIS timestamp. That place is the script's
+      // own, so it is never overwritten with an earlier panel's location — the
+      // old rewrite silently moved whole stretches of the story into the first
+      // panel's room whenever the Hindi line's place word was not in the cue
+      // list, which made prompts read as a different scene than the script.
       active = here;
       return prompt;
     }
-    if (declaresPlace) {
-      // The line itself moves the story; trust the written setting.
-      if (here) active = here;
-      return prompt;
-    }
-    if (here && here === active) return prompt;
-    // \b matters: without it the place word "bus" rewrote "business suit" into
-    // "roominess suit", and that corrupted wording went straight to the renderer.
-    const fixed = here
-      ? prompt.replace(
-          new RegExp(`\\b${here.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i"),
-          active,
-        )
-      : prompt;
-    // Described as scenery, not as an instruction: "do not move the story to a
-    // different place" is not something a renderer can draw, and it displaced
-    // real scene detail out of the prompt window.
-    return `${fixed}. The same ${active} as the previous panel, with the same walls, furniture, props and time of day`;
+    if (!active) return prompt;
+    // Only a prompt with NO place of its own inherits the running location, and
+    // it is described as scenery, never as an instruction.
+    return `${prompt}. The same ${active} as the previous panel, with the same walls, furniture, props and time of day`;
   });
 }
+
 
 
 /** True when a string is mostly Latin-script text the image engine can read. */
