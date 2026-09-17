@@ -262,7 +262,15 @@ const PROMPT_SYSTEM =
   "depict him as a boy, teenager, schoolboy, child, or 14–16 years old.\n" +
   "- ONE LINE = ONE IMAGE (absolute): exactly one prompt per requested number, in the same order, never merged, never " +
   "split, never skipped, never a placeholder. Each prompt must be visibly DIFFERENT from its neighbours.\n" +
+  "- NOTHING INVENTED (absolute): every person, place, object, prop and event in the prompt must come from the script — " +
+  "from the requested line itself, from its neighbouring lines, or from the character bible. Never invent a room type, " +
+  "building, institution, machine, vehicle, furniture, clock time, weather or event the script never mentions (no " +
+  "'investigation room', 'office', 'laboratory' or similar unless the script says so). If the line does not state a " +
+  "place, reuse the last place the SCRIPT itself stated — never a new one you made up. Before writing, translate the " +
+  "Hindi/Hinglish line to yourself and make sure every noun and verb of that translation is visible in your prompt; if " +
+  "your prompt could not be recognised as a drawing of that exact line, rewrite it.\n" +
   "- LITERAL SUBJECT (the most important rule): draw the visible event happening at THAT timestamp and nothing else. " +
+
   "First classify the line. If a named person says, tells, explains, warns, asks, answers, thinks, remembers or learns " +
   "information, show that present speaker/listener interaction and its emotion — DO NOT illustrate nouns inside their " +
   "speech or thought as if those events are happening now. For example, a woman warning someone about an army shows " +
