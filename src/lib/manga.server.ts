@@ -16,10 +16,10 @@ const IMAGE_REQUEST_TIMEOUT_MS = 1_800_000;
  * unwanted media such as photography or pencil sketches can make Flux draw them.
  */
 export const STYLE =
-  "FIXED VISUAL STYLE: polished 2D Japanese television anime frame, crisp uniform ink linework, " +
-  "clean cel shading, restrained soft gradient highlights, expressive anime facial design, " +
-  "consistent character proportions, richly painted anime background, vivid balanced colours, " +
-  "sharp finished production artwork";
+  "FIXED VISUAL STYLE: dynamic shonen action manga artwork of a magical fantasy world, bold crisp ink linework, " +
+  "dramatic screentone-style shading, explosive energy and aura effects, motion speed lines on attacks, " +
+  "expressive manga facial design, consistent character proportions, richly detailed magical world backgrounds, " +
+  "vivid saturated colours with glowing magical light, sharp finished action-manga artwork";
 
 /**
  * The single authoritative light statement for every panel: natural, faithful
@@ -1577,11 +1577,11 @@ function clip(s: string, max: number): string {
  * without spending CLIP's short window on style nouns — and, critically,
  * without ever naming faces or eyes as things to draw.
  */
-const STYLE_LEAD = "2D anime cel-shaded illustration of";
+const STYLE_LEAD = "dynamic shonen action manga illustration, magical fantasy world, of";
 
 const STYLE_TAIL =
-  "polished 2D Japanese anime animation frame, crisp ink outlines, flat cel colour fills in full colour, " +
-  "hand-painted background, finished artwork drawn edge to edge";
+  "bold shonen fighting manga artwork, crisp ink outlines, dramatic shading, glowing magical energy effects, " +
+  "motion lines on action, full colour, richly detailed fantasy background, finished artwork drawn edge to edge";
 
 /**
  * ONE short identity line per character in frame.
