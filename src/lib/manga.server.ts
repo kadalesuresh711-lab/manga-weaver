@@ -1536,7 +1536,7 @@ export function hasPeople(prompt: string, bible?: string): boolean {
  * the style words never name eyes or faces. Style is restated compactly at
  * the end, inside the T5 window.
  */
-const IMAGE_PROMPT_BUDGET = 1150;
+const IMAGE_PROMPT_BUDGET = 1250;
 // Flux CLIP gives the first ~300 characters the strongest influence. Keep the
 // exact action inside that window rather than allowing decorative detail to
 // displace it.
