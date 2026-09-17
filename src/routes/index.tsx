@@ -749,9 +749,10 @@ function Index() {
                 return;
               }
               const prompt = (slot as string).trim();
-              // Nothing is queued for drawing yet: every prompt is written
-              // first, then verified, and only then drawn.
+              // Draw immediately: this timestamp's own picture starts rendering
+              // as soon as its own prompt exists — no waiting for the rest.
               record(s.index, { prompt, status: "waiting" });
+              enqueue(s, prompt);
             });
           } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
