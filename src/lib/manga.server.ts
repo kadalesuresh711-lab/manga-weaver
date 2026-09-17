@@ -318,6 +318,18 @@ const PROMPT_SYSTEM =
   "older one beside them, never age a child up or an elder down to match the other person, and never draw a male " +
   "character feminine (or a female one masculine) just because they share the frame with the opposite gender.\n" +
   "- HEAD COUNT: state explicitly how many people are in frame and that nobody else is present.\n" +
+  "- FIGHTING & MAGIC (critical): these stories are action fantasy. Whenever the line contains combat, a technique, a " +
+  "spell, an awakening, a transformation, a curse, an aura, a summon, a beast, a weapon clash or any supernatural " +
+  "ability, the prompt MUST describe it as visible drawable energy and motion: the exact stance and mid-motion body " +
+  "mechanics of every fighter (which foot forward, which arm extended, where the fist/blade/palm is), the precise " +
+  "shape, colour and direction of the power (for example 'jagged violet lightning spiralling up his right forearm and " +
+  "bursting forward in a cone'), the point of impact, and the physical consequence in the environment (cracked ground, " +
+  "shattered stone, torn cloth, dust ring, splintered trees, displaced air, scattered debris, blood, sweat, cuts). " +
+  "State the eyes glowing or not, the aura around each body, the speed lines implied by the pose, and where each " +
+  "fighter's gaze is locked. Copy each character's own established ability, weapon and power colour from the bible and " +
+  "the earlier script lines so the same ability always looks the same; never give a character a power the script did " +
+  "not give them. Also describe the battlefield itself in full — terrain, weather, sky, surrounding structures, " +
+  "onlookers if the line has them — so the fight reads as happening in a real place at that exact timestamp.\n" +
   "- Exactly one scene, one moment, one instance of each character. Never ask for multiple panels, insets or collages.\n" +
   "- NO-CHARACTER LINES (critical): if the line describes only a place, an object, the sky, weather or a phenomenon and " +
   "involves no person, the prompt MUST be a pure environment shot with NOBODY in it. Start it with 'Empty environment " +
@@ -488,7 +500,10 @@ export async function writePrompts(
         `The number and the start time must both belong to the line the prompt draws. Nothing else.`,
       {
         temperature: temp,
-        maxOutputTokens: Math.min(32_000, 700 + want.length * 160),
+        // One-prompt requests get a generous budget so a single timestamp can be
+        // described with full fight/magic/environment detail.
+        maxOutputTokens:
+          want.length === 1 ? 2_000 : Math.min(32_000, 700 + want.length * 160),
         timeoutMs: 3_600_000,
         attempts: 6,
       },
